@@ -1,4 +1,5 @@
-import moment from "moment";
+import fecha from "fecha";
+
 
 export default class helpers {
   getRandomKey() {
@@ -7,26 +8,15 @@ export default class helpers {
   }
 
   formatTime(date) {
-    let formattedDate = moment.utc(date).format("YYYYMMDDTHHmmssZ");
-    return formattedDate.replace("+00:00", "Z");
+    let formatted = fecha.format(new Date(date), "YYYYMMDDTHHmmssZ");
+    return formatted
   }
 
   calculateDuration(startTime, endTime) {
-    // snag parameters and format properly in UTC
-    let end = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
-    let start = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
-
-    // calculate the difference in milliseconds between the start and end times
-    let difference = moment(end, "DD/MM/YYYY HH:mm:ss").diff(
-      moment(start, "DD/MM/YYYY HH:mm:ss")
-    );
-
-    // convert difference from above to a proper momentJs duration object
-    let duration = moment.duration(difference);
-
-    return (
-      Math.floor(duration.asHours()) + moment.utc(difference).format(":mm")
-    );
+    var diffMs = (new Date(endTime) - new Date(startTime)); // milliseconds between 
+    var diffHrs = Math.floor((diffMs) / 3600000); // hours
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    return `${diffHrs}:${diffMins}`
   }
 
   buildUrl(event, type, isCrappyIE) {
